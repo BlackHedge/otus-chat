@@ -43,7 +43,7 @@ public class Server {
         ClientHandler receiverClient = null;
         for (ClientHandler c : clients) {
             if (c.getUsername().equals(receiver)) {
-                c.sendMessage("\u001B[42m" + sender.getUsername() + "[w]" + ":\033[0m " + message.split(" ")[2]);
+                c.sendMessage("\u001B[42m" + sender.getUsername() + "[w]" + ":\033[0m " + message.split(" ",3)[2]);
                 receiverClient = c;
                 break;
             }
@@ -51,7 +51,7 @@ public class Server {
         if (receiverClient == null) {
             broadcastMessage(sender.getUsername() + ": " + message);
         } else {
-            sender.sendMessage("\u001B[42m" + sender.getUsername() + "[w]" + ":\033[0m " + message.split(" ")[2]);
+            sender.sendMessage("\u001B[42m" + sender.getUsername() + "[w]" + ":\033[0m " + message.split(" ",3)[2]);
         }
     }
 }
