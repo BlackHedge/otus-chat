@@ -15,6 +15,10 @@ public class ClientHandler {
         return nickname;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.server = server;
         this.socket = socket;
@@ -40,6 +44,10 @@ public class ClientHandler {
             if (msg.startsWith("/")) {
                 if (msg.startsWith("/exit")) {
                     break;
+                }
+                if (msg.toLowerCase().startsWith("/w ") && msg.split(" ", 3).length == 3) {
+                    String recUser = msg.split(" ", 3)[1];
+                    server.personalMessage(this, recUser, msg);
                 }
                 continue;
             }
@@ -135,4 +143,6 @@ public class ClientHandler {
             ex.printStackTrace();
         }
     }
+
+
 }
