@@ -15,10 +15,6 @@ public class ClientHandler {
         return nickname;
     }
 
-    public String getUsername() {
-        return nickname;
-    }
-
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.server = server;
         this.socket = socket;
