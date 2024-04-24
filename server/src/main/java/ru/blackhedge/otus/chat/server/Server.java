@@ -7,6 +7,11 @@ import java.util.*;
 public class Server {
     private int port;
     private List<ClientHandler> clients;
+    private AuthenticationService authenticationService;
+
+    public AuthenticationService getAuthenticationService() {
+        return authenticationService;
+    }
 
     public Server(int port) {
         this.port = port;
@@ -15,10 +20,16 @@ public class Server {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
+            this.authenticationService = new InMemoryAuthenticationService();
+            System.out.println("Сервис аутентификации запущен: " + authenticationService.getClass().getSimpleName());
             System.out.printf("Сервер запущен на порту: %d, ожидаем подключения клиентов\n", port);
             while (true) {
-                Socket socket = serverSocket.accept();
-                subscribe(new ClientHandler(this, socket));
+                try {
+                    Socket socket = serverSocket.accept();
+                    new ClientHandler(this, socket);
+                } catch (Exception ex) {
+                    System.out.println("Возникла ошибка при обработке подключившегося клиента");
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -26,11 +37,13 @@ public class Server {
     }
 
     public synchronized void subscribe(ClientHandler clientHandler) {
+        broadcastMessage("К чату присоединился " + clientHandler.getNickname());
         clients.add(clientHandler);
     }
 
     public synchronized void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
+        broadcastMessage("Из чата вышел " + clientHandler.getNickname());
     }
 
     public synchronized void broadcastMessage(String message) {
@@ -53,5 +66,14 @@ public class Server {
         } else {
             sender.sendMessage("\u001B[42m" + sender.getUsername() + "[w]" + ":\033[0m " + message.split(" ",3)[2]);
         }
+    }
+    
+    public synchronized boolean isNicknameBusy(String nickname) {
+        for (ClientHandler c : clients) {
+            if (c.getNickname().equals(nickname)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
