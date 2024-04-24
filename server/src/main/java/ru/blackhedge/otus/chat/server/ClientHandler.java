@@ -16,7 +16,7 @@ public class ClientHandler {
     }
 
     public String getUsername() {
-        return username;
+        return nickname;
     }
 
     public ClientHandler(Server server, Socket socket) throws IOException {
@@ -143,6 +143,4 @@ public class ClientHandler {
             ex.printStackTrace();
         }
     }
-
-
 }

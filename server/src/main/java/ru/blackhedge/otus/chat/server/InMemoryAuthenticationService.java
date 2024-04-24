@@ -19,7 +19,7 @@ public class InMemoryAuthenticationService implements AuthenticationService {
     private List<User> users;
 
     public InMemoryAuthenticationService() {
-        this.users = users;
+        this.users = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             this.users.add(new User("login" + i, "pass" + i, "nick" + i));
         }

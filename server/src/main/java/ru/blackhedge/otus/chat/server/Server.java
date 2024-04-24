@@ -27,7 +27,7 @@ public class Server {
                 try {
                     Socket socket = serverSocket.accept();
                     new ClientHandler(this, socket);
-                } catch (Exception ex) {
+                } catch (Exception e) {
                     System.out.println("Возникла ошибка при обработке подключившегося клиента");
                 }
             }
@@ -35,6 +35,7 @@ public class Server {
             ex.printStackTrace();
         }
     }
+
 
     public synchronized void subscribe(ClientHandler clientHandler) {
         broadcastMessage("К чату присоединился " + clientHandler.getNickname());
