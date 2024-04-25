@@ -2,27 +2,34 @@ package ru.blackhedge.otus.chat.server;
 
 import java.util.*;
 
+import static ru.blackhedge.otus.chat.server.Role.*;
+
 public class InMemoryAuthenticationService implements AuthenticationService {
 
     private class User {
         private String login;
         private String password;
         private String nickname;
+        private Role role;
 
-        public User(String login, String password, String nickname) {
+        public User(String login, String password, String nickname, Role role) {
             this.login = login;
             this.password = password;
             this.nickname = nickname;
+            this.role = role;
         }
     }
 
     private List<User> users;
+    private Server server;
 
-    public InMemoryAuthenticationService() {
+    public InMemoryAuthenticationService(Server server) {
         this.users = new ArrayList<>();
+        this.users.add(new User("admin", "admin", "Admin", ADMIN));
         for (int i = 1; i <= 10; i++) {
-            this.users.add(new User("login" + i, "pass" + i, "nick" + i));
+            this.users.add(new User("login" + i, "pass" + i, "nick" + i, USER));
         }
+        this.server = server;
     }
 
     @Override
@@ -43,7 +50,7 @@ public class InMemoryAuthenticationService implements AuthenticationService {
         if (isNicknameAlreadyExist(nickname)) {
             return false;
         }
-        users.add(new User(login, password, nickname));
+        users.add(new User(login, password, nickname, USER));
         return true;
     }
 
@@ -64,6 +71,17 @@ public class InMemoryAuthenticationService implements AuthenticationService {
                 return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean hasPermission(String nickname) {
+        for (User u : users) {
+            if (u.nickname.equals(nickname) && u.role == ADMIN) {
+                return true;
+            }
+        }
+        server.searchByNickname(nickname).sendMessage("У вас недостаточно прав для выполнения команды");
         return false;
     }
 }

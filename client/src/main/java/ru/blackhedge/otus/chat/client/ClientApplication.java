@@ -2,6 +2,7 @@ package ru.blackhedge.otus.chat.client;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Scanner;
 
 public class ClientApplication {
@@ -18,6 +19,10 @@ public class ClientApplication {
                         String inMessage = in.readUTF();
                         System.out.println(inMessage);
                     }
+                } catch (SocketException ex) {
+                    System.out.println("Потеряно соединение");
+                } catch (EOFException ex) {
+                    System.out.println("Что-то пошло не так");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -29,6 +34,8 @@ public class ClientApplication {
                     break;
                 }
             }
+        } catch (SocketException ex) {
+            System.out.println("Потеряно соединение");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
