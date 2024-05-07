@@ -43,7 +43,15 @@ public class ClientHandler {
                 }
                 if (msg.toLowerCase().startsWith("/w ") && msg.split(" ", 3).length == 3) {
                     String recUser = msg.split(" ", 3)[1];
-                    server.personalMessage(this, recUser, msg);
+                    server.whisperMessage(this, recUser, msg);
+                }
+                if (msg.startsWith("/kick ") && server.getAuthenticationService().hasPermission(this.getNickname())) {
+                    String kickedUser = msg.split(" ", 2)[1];
+                    if (!kickedUser.equals(this.getNickname())) {
+                        server.kick(kickedUser);
+                    } else {
+                        this.sendMessage("Нельзя кикнуть себя");
+                    }
                 }
                 continue;
             }
