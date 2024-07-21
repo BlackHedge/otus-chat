@@ -10,4 +10,5 @@ public interface AuthenticationService {
     boolean isNicknameAlreadyExist(String nickname);
 
     boolean hasPermission(String nickname);
+    String getConnection();
 }

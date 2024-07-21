@@ -2,6 +2,7 @@ package ru.blackhedge.otus.chat.server;
 
 import java.io.*;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.*;
 
 public class Server {
@@ -20,8 +21,9 @@ public class Server {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            this.authenticationService = new InMemoryAuthenticationService(this);
-            System.out.println("Сервис аутентификации запущен: " + authenticationService.getClass().getSimpleName());
+            this.authenticationService = new AuthenticationServiceImpl(this);
+            System.out.println("Сервис аутентификации запущен: " + authenticationService.getClass().getSimpleName()
+                    + "/" + authenticationService.getConnection());
             System.out.printf("Сервер запущен на порту: %d, ожидаем подключения клиентов\n", port);
             while (true) {
                 try {
@@ -32,6 +34,8 @@ public class Server {
                 }
             }
         } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (SQLException ex){
             ex.printStackTrace();
         }
     }
